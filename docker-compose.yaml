@@ -34,9 +34,15 @@ services:
     command: >
       bash -c "
         airflow db init
-        airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com --no-input 2>/dev/null || true
+        airflow users create \
+          --username admin \
+          --password admin \
+          --firstname Admin \
+          --lastname User \
+          --role Admin \
+          --email admin@example.com \
+          2>/dev/null || true
         airflow webserver & airflow scheduler
       "
-
 volumes:
   postgres_db_volume:
