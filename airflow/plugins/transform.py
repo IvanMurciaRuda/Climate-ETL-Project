@@ -57,7 +57,7 @@ class WeatherTransform:
 
                 hourly_records.append(record)
                     
-                self.logger.info(f"Extracted {num_records} for {city_name}")
+            self.logger.info(f"Extracted {num_records} hourly records for {city_name}")
 
         return hourly_records
 

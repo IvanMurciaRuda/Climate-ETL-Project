@@ -69,7 +69,7 @@ def extract_data_all_cities(**context):
             })
 
     context["ti"].xcom_push(key="data", value = all_data)
-    return
+    return all_data
 
 def load_to_db(**context):
     all_data = context['ti'].xcom_pull(
