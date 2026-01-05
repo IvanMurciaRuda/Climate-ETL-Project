@@ -4,7 +4,10 @@ from datetime import datetime, timedelta
 import requests
 import json
 import psycopg2
+import logging
 from psycopg2.extras import RealDictCursor
+
+logger = logging.getLogger(__name__)
 
 args = {
     "owner" : "airflow",
@@ -68,6 +71,7 @@ def extract_data_all_cities(**context):
                 "success": False
             })
 
+    logging.info(f"Extracted {len(all_data)} rows of raw data")
     context["ti"].xcom_push(key="data", value = all_data)
     return all_data
 
@@ -88,11 +92,18 @@ def load_to_db(**context):
         return "No data"
 
     cursor = connection.cursor()
-
+    successes = 0
+    failures = 0
     for city_data in all_data:
         if city_data["success"]:
+            successes += 1
             cursor.execute("INSERT INTO weather_raw (city_id, data) values (%s, %s)", (city_data["city_id"] , json.dumps(city_data["data"]) ))
+        else:
+            logger.error(f"Error inserting row: {city_data}")
+            failures += 1
 
+    logger.info(f"Added {successes} new rows of data; {failures} rows failed")
+    
     connection.commit()
     cursor.close()
     connection.close()

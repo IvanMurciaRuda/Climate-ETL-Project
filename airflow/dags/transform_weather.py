@@ -68,16 +68,88 @@ def transform_data(**context):
         logger.warning("No data transformed")
         return []
 
-    logger.info(f"transformed {len(transformed_data)} rows of data")        
+    logger.info(f"transformed {len(transformed_data)} rows of data")
+
+    context['ti'].xcom_push(key='transformed_data', value=transformed_data)        
 
     return transformed_data
 
 def load_to_processed(**context):
-    # 1. Obtener datos transformados de XCom
-    # 2. Conectar a PostgreSQL
-    # 3. INSERT INTO weather_processed ... ON CONFLICT DO UPDATE
-    # 4. Loggear cuántos registros se insertaron/actualizaron
-    return
+
+    try:
+
+        connection = psycopg2.connect(
+            host = "postgres",
+            database = "weather_db",
+            user = "airflow",
+            password = "airflow"
+        )
+        cursor = connection.cursor()
+
+        row_list = context['ti'].xcom_pull(task_ids = 'transform_task', key='transformed_data')
+
+        if not row_list:
+            logger.warning("No data received from transform_task")
+            cursor.close()
+            connection.close()
+            return 0
+        
+        inserted = 0
+        updated = 0
+
+        query = """
+                INSERT INTO weather_processed (city_id, weather_date, weather_hour, date_hour, temperature, humidity, precipitation, feels_like_temperature, wind_speed)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (city_id, weather_date, weather_hour)
+                DO UPDATE SET 
+                    date_hour = EXCLUDED.date_hour,
+                    temperature = EXCLUDED.temperature,
+                    humidity = EXCLUDED.humidity,
+                    precipitation = EXCLUDED.precipitation,
+                    feels_like_temperature = EXCLUDED.feels_like_temperature,
+                    wind_speed = EXCLUDED.wind_speed
+                RETURNING (xmax = 0) as inserted
+                """
+
+        for row in row_list:
+
+            params = (
+                    row['city_id'],
+                    row['weather_date'],
+                    row['weather_hour'],
+                    row['date_hour'],
+                    row['temperature'],
+                    row['humidity'],
+                    row['precipitation'],
+                    row['feels_like_temperature'],
+                    row['wind_speed']
+            )
+
+            try:
+                cursor.execute(query, params)
+                result = cursor.fetchone()
+                if result and result[0]:
+                    inserted += 1
+                else:
+                    updated += 1
+
+            except Exception as e:
+                logger.error(f"error inserting row {row}: {str(e)}")
+                continue
+
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        logger.info(f"Completed task: added {inserted} rows and updated {updated} rows")
+
+        return
+    
+    except Exception as e:
+        logger.error(f"Error in load_to_processed: {str(e)}")
+        raise
+
 
 with DAG(
     dag_id = "transform_weather_dag",
@@ -99,4 +171,10 @@ with DAG(
         provide_context = True
     )
 
-    extract_task >> transform_task
+    load_task = PythonOperator(
+        task_id = "load_task",
+        python_callable = load_to_processed,
+        provide_context = True
+    )
+
+    extract_task >> transform_task >> load_task
