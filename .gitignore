@@ -194,3 +194,5 @@ airflow.db
 *.json
 airflow/logs/**/latest
 airflow/logs/**/*.log
+
+run_etl_and_sutdown.bat

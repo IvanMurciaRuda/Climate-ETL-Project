@@ -37,4 +37,8 @@ CREATE TABLE IF NOT EXISTS weather_processed (
 -- Sample data -- 
 INSERT INTO cities (name, latitude, longitude, country) VALUES
 ('Madrid', 40.4168, -3.7038, 'Spain'),
-('Barcelona', 41.3874, 2.1686, 'Spain');
+('Barcelona', 41.3874, 2.1686, 'Spain'),
+('Paris', 48.8566, 2.3522, 'France'),
+('London', 51.5074, -0.1278, 'UK'),
+('Reykjavik', 64.1466, -21.9426, 'Iceland'),
+('Rome', 41.9028, 12.4964, 'Italy');

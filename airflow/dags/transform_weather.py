@@ -30,7 +30,7 @@ def extract_raw_data(**context):
     )
 
     cursor = connection.cursor(cursor_factory=RealDictCursor)
-    cursor.execute("SELECT wr.city_id, wr.data as raw_json, c.name as city_name from weather_raw as wr join cities c on wr.city_id = c.id WHERE wr.extracted_at >= NOW() - INTERVAL '1 DAY'")
+    cursor.execute("SELECT wr.city_id, wr.data as raw_json, c.name as city_name from weather_raw as wr join cities c on wr.city_id = c.id WHERE DATE(wr.extracted_at) = CURRENT_DATE")
 
     data = cursor.fetchall()
 
@@ -155,7 +155,7 @@ with DAG(
     dag_id = "transform_weather_dag",
     default_args = args,
     start_date = datetime(2024,1,1),
-    schedule="@daily",
+    schedule="30 0 * * *",
     catchup = False,
     tags = ["weather", "etl"]
 ) as dag:
