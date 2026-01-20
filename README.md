@@ -36,6 +36,7 @@ graph TB
     style C fill:#053e4d
     style D fill:#054d0c
     style E fill:#4d054b
+    style F fill:#4d0522
 ```
 ##  Features
 
