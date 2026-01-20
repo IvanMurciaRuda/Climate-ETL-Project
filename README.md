@@ -8,21 +8,6 @@
 
 A complete **ETL pipeline** that extracts, transforms, and visualizes climate data from multiple European cities in real-time. Built with modern data engineering tools and designed for production.
 
-## Table of Contents
-- [Overview](#-overview)
-- [Architecture](#-architecture)
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Quick Start](#-quick-start)
-- [Project Structure](#-project-structure)
-- [Dashboard Features](#-dashboard-features)
-- [ETL Pipeline Details](#-etl-pipeline-details)
-- [Configuration](#-configuration)
-- [Testing](#-testing)
-- [Performance Metrics](#-performance-metrics)
-
----
-
 ## Overview
 
 This project demonstrates a professional **data engineering pipeline** that:
