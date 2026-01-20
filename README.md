@@ -25,17 +25,17 @@ Perfect for **portfolio showcase** and demonstrating real-world data engineering
 
 ```mermaid
 graph TB
-    A[Open-Meteo API] --> B[⚡ Airflow DAG]
-    B --> C[(🗄️ PostgreSQL RAW<br/>weather_raw)]
-    C --> D[🔧 WeatherTransformer]
-    D --> E[(🗄️ PostgreSQL PROCESSED<br/>weather_processed)]
-    E --> F[📊 Power BI Dashboard]
+    A[Open-Meteo API] --> B[Airflow DAG]
+    B --> C[(PostgreSQL RAW<br/>weather_raw)]
+    C --> D[WeatherTransformer]
+    D --> E[(PostgreSQL PROCESSED<br/>weather_processed)]
+    E --> F[Power BI Dashboard]
     
-    style A fill:#ff6b6b
-    style B fill:#4ecdc4
-    style C fill:#45b7d1
-    style D fill:#96ceb4
-    style E fill:#feca57
+    style A fill:#9e1f16
+    style B fill:#0e7b96
+    style C fill:#053e4d
+    style D fill:#054d0c
+    style E fill:#4d054b
 ```
 ##  Features
 
