@@ -1,4 +1,4 @@
-# Climate ETL Pipeline - Data Engineering Portfolio Project
+# Climate ETL Pipeline - Data Engineering Project
 
 ![Power BI Dashboard](https://img.shields.io/badge/Power_BI-Dashboard-yellow)
 ![Airflow](https://img.shields.io/badge/Apache-Airflow-017CEE)
@@ -16,8 +16,6 @@ This project demonstrates a professional **data engineering pipeline** that:
 - **Loads** clean data into PostgreSQL with UPSERT operations
 - **Visualizes** results in an interactive Power BI dashboard
 - **Orchestrates** everything with Apache Airflow in Docker containers
-
-Perfect for **portfolio showcase** and demonstrating real-world data engineering skills.
 
 ---
 
