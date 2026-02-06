@@ -6,8 +6,8 @@ services:
       POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
     volumes:
-    - postgres_db_volume:/var/lib/postgresql/data
-    - ./database/init:/docker-entrypoint-initdb.d
+      - postgres_db_volume:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U airflow"]
       interval: 10s
@@ -46,5 +46,40 @@ services:
           2>/dev/null || true
         airflow webserver & airflow scheduler
       "
+
+  laravel_app:
+    build:
+      context: ./laravel-app
+      dockerfile: Dockerfile
+    container_name: weather-laravel
+    restart: unless-stopped
+    working_dir: /var/www/html
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: weather_db
+      DB_USERNAME: airflow
+      DB_PASSWORD: airflow
+      APP_NAME: "Weather Dashboard"
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8000
+    volumes:
+      - ./laravel-app:/var/www/html
+      - laravel_vendor:/var/www/html/vendor
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -c "
+        composer install --no-interaction --optimize-autoloader &&
+        php artisan key:generate --force &&
+        php artisan serve --host=0.0.0.0 --port=8000
+      "
+
 volumes:
   postgres_db_volume:
+  laravel_vendor:
