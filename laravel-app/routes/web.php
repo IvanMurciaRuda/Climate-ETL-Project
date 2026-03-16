@@ -1,14 +1,15 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return 'Weather Platform - Bienvenido';
 });
 
-Route::get('/login', function () {
-    return 'Página de Login (SP-001-F pendiente)';
-})->name('login');
+Route::get('/login', [LoginController::class,'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::get('/logout', [LoginController::class ,'logout'])->name('logout');
 
 Route::get('/dashboard', function () {
     return 'Dashboard - Usuario autenticado';
